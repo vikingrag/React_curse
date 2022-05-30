@@ -9,9 +9,9 @@ const initialValues = {
 }
 
 function App() {
-  const [userDate, setUserDate] = useState(initialValues);
+  const [UserData, setUserData] = useState(initialValues);
   const [users, setUsers] = useState([]);
-  const [editableUserDate, setEditableUserDate] = useState({
+  const [editableUserData, setEditableUserData] = useState({
     isEdit: false,
     userIndex: null
   })
@@ -21,53 +21,64 @@ function App() {
 
   }
 
-  const isFilledFirlds = userDate.userName && userDate.userSurname && userDate.userSalary;
+  const isFilledFields = UserData.userName && UserData.userSurname && UserData.userSalary;
 
   const handleSubmitUser = (e) => {
     e.preventDefault();
 
-    if (isFilledFirlds) {
-      if (editableUserDate.isEdit) {
+    if (isFilledFields) {
+      if (editableUserData.isEdit) {
         const editedData = users;
-        editedData.splice(editableUserDate.userDate, 1, userDate)
+        editedData.splice(editableUserData.userIndex, 1, UserData);
 
         setUsers(editedData);
 
-        setEditableUserDate({
+        setEditableUserData({
           isEdit: false,
           userIndex: null
 
         })
 
       } else {
-        setUsers((prevState) => [...prevState, userDate])
+        setUsers((prevState) => [...prevState, UserData]);
       }
 
-      setUserDate(initialValues)
+      setUserData(initialValues)
 
     }
 
   }
 
-  const handleCleanClick = () => setUserDate(initialValues);
+  const handleCleanClick = () => setUserData(initialValues);
+
   const handleEditClick = (data, index) => {
-    setUserDate(data);
+    setUserData(data);
+    setEditableUserData({
+      isEdit: true,
+      userIndex: index
+    })
 
   }
 
-  console.log('userDate: ', userDate);
+  console.log('userData: ', UserData);
 
 
   return (
     <div className='wrapper'>
       <div className='wrapper-content'>
-        <div className='table-date'>
-          <tadle>
-            <th>#</th>
-            <th>User Name</th>
-            <th>User Surname</th>
-            <th>User Salary</th>
-            <th>Actions</th>
+        <div className='table-data'>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>User Name</th>
+                <th>User Surname</th>
+                <th>User Salary</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+
 
             <tbody>
               {users.map((user, index) => (
@@ -89,35 +100,35 @@ function App() {
 
             </tbody>
 
-          </tadle>
+          </table>
         </div>
         <div>
 
-          <form onSubmit={handleSubmitUser}>
-            <input placeholder='Write your name' onChange={(e) => setUserDate((prevState) => ({
+          <form onSubmit={handleSubmitUser} onReset={handleCleanClick}>
+            <input placeholder='Write your name' onChange={(e) => setUserData((prevState) => ({
               ...prevState,
               userName: e.target.value
             }))}
-              value={userDate.userName}
+              value={UserData.userName}
             />
 
-            <input placeholder='Write your surname' onChange={(e) => setUserDate((prevState) => ({
+            <input placeholder='Write your surname' onChange={(e) => setUserData((prevState) => ({
               ...prevState,
               userSurname: e.target.value
             }))}
-              value={userDate.userSurname}
+              value={UserData.userSurname}
             />
 
-            <input placeholder='Write your salary' onChange={(e) => setUserDate((prevState) => ({
+            <input placeholder='Write your salary' onChange={(e) => setUserData((prevState) => ({
               ...prevState,
               userSalary: e.target.value
             }))}
-              value={userDate.userSalary}
+              value={UserData.userSalary}
             />
 
             <div className='buttons-wrapper'>
               <button type='reset'>Clean</button>
-              <button type='submit'>Add</button>
+              <button disabled={!isFilledFields} type='submit'>{editableUserData.isEdit ? 'Edit' : 'Add'}</button>
             </div>
 
           </form>
